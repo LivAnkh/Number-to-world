@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Number to Words Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 400px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button {
+            border: none;
+            cursor: pointer;
+        }
+        .btn-convert {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-clear {
+            background-color: #dc3545;
+            color: white;
+        }
+        .result {
+            background: #e9ecef;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Number to Words Converter</h2>
+    <input type="number" id="numberInput" placeholder="Enter a number">
+    <button class="btn-convert" onclick="convert()">Convert</button>
+    <button class="btn-clear" onclick="clearForm()">Clear</button>
+    <div class="result" id="result"><p>(0)</p></div>
+</div>
+
+<script>
+    function numberToWords(num) {
+        const words = ["Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine",
+            "Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+        const tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+
+        if (num < 20) return words[num];
+        else if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? " " + words[num % 10] : "");
+        else if (num < 1000) return words[Math.floor(num / 100)] + " Hundred" + (num % 100 ? " " + numberToWords(num % 100) : "");
+        else if (num < 1000000) return numberToWords(Math.floor(num / 1000)) + " Thousand" + (num % 1000 ? " " + numberToWords(num % 1000) : "");
+        else return "Number too large!";
+    }
+
+    function numberToKhmer(num) {
+        const kh = {
+            0: 'សូន្យ', 1: 'មួយ', 2: 'ពីរ', 3: 'បី', 4: 'បួន', 5: 'ប្រាំ',
+            6: 'ប្រាំមួយ', 7: 'ប្រាំពីរ', 8: 'ប្រាំបី', 9: 'ប្រាំបួន',
+            10: 'ដប់', 20: 'ម្ភៃ', 30: 'សាមសិប', 40: 'សែសិប', 50: 'ហាសិប',
+            60: 'ហុកសិប', 70: 'ចិតសិប', 80: 'ប៉ែតសិប', 90: 'កៅសិប'
+        };
+
+        if (num < 11) return kh[num] + " រៀល";
+        else if (num < 100) {
+            let tens = num - (num % 10);
+            return kh[tens] + (num % 10 ? " " + kh[num % 10] : "") + " រៀល";
+        } else if (num < 1000) {
+            return kh[Math.floor(num / 100)] + " រយ" + (num % 100 ? " " + numberToKhmer(num % 100) : " រៀល");
+        } else if (num < 10000) {
+            return kh[Math.floor(num / 1000)] + " ពាន់" + (num % 1000 ? " " + numberToKhmer(num % 1000) : " រៀល");
+        } else if (num < 1000000) {
+            return numberToKhmer(Math.floor(num / 10000)) + " ម៉ឺន" + (num % 10000 ? " " + numberToKhmer(num % 10000) : " រៀល");
+        } else {
+            return "ច្រើនពេក!";
+        }
+    }
+
+    function convert() {
+        const input = document.getElementById("numberInput").value;
+        const resultDiv = document.getElementById("result");
+
+        if (input === "" || isNaN(input)) {
+            resultDiv.innerHTML = "<p>Invalid Input</p>";
+            return;
+        }
+
+        const number = parseInt(input);
+
+        if (number < 0) {
+            resultDiv.innerHTML = "<p>Invalid Input</p>";
+        } else {
+            const riel = numberToWords(number) + " Riel";
+            const khmer = numberToKhmer(number);
+            const usd = (number % 4000 === 0)
+                ? (number / 4000) + "$"
+                : (number / 4000).toFixed(2) + "$";
+
+            resultDiv.innerHTML = `<p><strong>a.</strong> ${riel}</p>
+                                   <p><strong>b.</strong> ${khmer}</p>
+                                   <p><strong>c.</strong> ${usd}</p>`;
+        }
+    }
+
+    function clearForm() {
+        document.getElementById("numberInput").value = "";
+        document.getElementById("result").innerHTML = "<p>(0)</p>";
+    }
+</script>
+
+</body>
+</html>
